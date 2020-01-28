@@ -1,5 +1,6 @@
 import express from "express";
-
+import { validateUsernamePassword } from "../middleware/authMiddleware";
+import { loginUserWithUsernamePassword } from "../controller/authController";
 const router = express.Router()
 
 /**
@@ -19,6 +20,6 @@ const router = express.Router()
  */
 
  
-router.get('/login', (req,res) => res.send({message:'Login ok'}))
+router.post('/signin',validateUsernamePassword, loginUserWithUsernamePassword )
 
 export default router

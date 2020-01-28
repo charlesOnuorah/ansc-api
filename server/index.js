@@ -1,7 +1,7 @@
 import express from "express";
 import swaggerJSDocs from "swagger-jsdoc";
 import swaggerUI from "swagger-ui-express";
-
+import bodyParser from 'body-parser';
 import "dotenv/config";
 import swaggerJSDoc from "swagger-jsdoc";
 
@@ -9,6 +9,10 @@ import swaggerJSDoc from "swagger-jsdoc";
 import authRoute from "./routes/authRoute";
 
 const app = express()
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
 
 /**
  * swaggerOptions configuration
@@ -51,11 +55,6 @@ app.get('/swagger.json', function(req, res) {
 //app.get('/customers', (req, res) => res.send({message:'hello world'}))
 
 app.use('/api/v1/auth', authRoute)
-
-
-
-
-
 
 const port = process.env.PORT || 3000;
 
