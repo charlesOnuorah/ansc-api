@@ -7,7 +7,7 @@ chai.use(chaiHttp);
 
 var { executeQuery } = require('../helper');
 
-var { newUser, wrongUserPassword, noUser } = require('./testAccounts');
+var { newUser, invalidToken, noUser, userDetail, duplicateUser } = require('./testAccounts');
 
 describe('It should test all the end points', function (){
     before( function(done) {
@@ -17,7 +17,7 @@ describe('It should test all the end points', function (){
                         "rolename varchar(50) not null,\n"+
                         "status TINYINT DEFAULT 1 NOT NULL,\n"+
                         "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);"
-        sql2 = sql2 +     "INSERT INTO user_roles(rolename) values ('enumerator');"
+        sql2 = sql2 +     "INSERT INTO user_roles(rolename) values ('enumerator'), ('admin');"
         sql3 = sql3 +     "CREATE TABLE IF NOT EXISTS base_users(\n"+
                             "userid int primary key AUTO_INCREMENT,\n"+
                             "firstname varchar(100) not null,\n"+
@@ -36,21 +36,53 @@ describe('It should test all the end points', function (){
                             "last_login TIMESTAMP,\n"+
                             "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n"+
                         ");"
+        let sql3a = "CREATE  INDEX username ON base_users(username);"
         sql4 = sql4 + "INSERT INTO base_users(firstname, lastname, email, contactLine, username, roleid)\n"+
                         "values('charles','onuorah', 'charles.onuorah@yahoo.com', '08163113450',\n"+
-                        "'08163113450',1);"
+                        "'08163113450',1), ('charles','onuorah', 'charles.onuorah@yahoo.com', '07010671710','07010671710',2);"
+        let sql5 = '' + "CREATE TABLE IF NOT EXISTS base_territory(\n"+
+                        "lgaid int primary key AUTO_INCREMENT,\n"+
+                        "state varchar(100) not null,\n"+
+                        "lga varchar(100) not null,\n"+
+                        "datecreated timestamp default CURRENT_TIMESTAMP \n"+
+                        ");"
+        let sql6 = "" + "insert into base_territory(state, lga)\n"+
+                        "values ('LAGOS', 'KOSOFE'),\n"+
+                        "('LAGOS', 'Lagos Island'),\n"+
+                        "('LAGOS', 'OSHODI'),\n"+
+                        "('ENUGU', 'OJI RIVER'),"+
+                        "('LAGOS', 'Surulere');"
+        let sql7 = "" + "CREATE TABLE IF NOT EXISTS base_user_lga_access(\n"+
+                        "id int primary key AUTO_INCREMENT,\n"+
+                        "lgaid int not null,\n"+
+                        "mappedTo varchar(100) not null,\n"+
+                        "createdBy varchar(100) not null,\n"+
+                        "datecreated timestamp default CURRENT_TIMESTAMP,\n"+
+                        "FOREIGN KEY (lgaid)\n"+
+                        "REFERENCES base_territory (lgaid),\n"+
+                        "FOREIGN KEY (mappedTo)\n"+
+                        "REFERENCES base_users(username),\n"+
+                        "FOREIGN KEY (createdBy)\n"+
+                        "REFERENCES base_users(username)\n"+
+                        ");"
             try{
 
                  executeQuery(sql).then(() => {
                     executeQuery(sql2).then(() => {
                         executeQuery(sql3).then(() => {
-                            executeQuery(sql4).then(() => done())
-                            
+                            executeQuery(sql3a).then(() => {
+                                executeQuery(sql4).then(() =>{
+                                    executeQuery(sql5).then(() => {
+                                        executeQuery(sql6).then(() => {
+                                            executeQuery(sql7).then(() => done())
+                                        })
+                                    })
+                                })
+                            })
                         })
                     })
                 })
             }catch(error){
-                console.log(error)
                return done(error)
             }
     })
@@ -58,12 +90,17 @@ describe('It should test all the end points', function (){
             var sql = '', sql2 = ''
          sql = sql + "DROP TABLE IF EXISTS user_roles;"
            sql2 = sql2 + "DROP TABLE IF EXISTS base_users;"
+           let sql3 = "DROP TABLE IF EXISTS base_territory"
+           let sql4 = "DROP TABLE IF EXISTS base_user_lga_access"
         try{
-            executeQuery(sql2).then(() => {
-                executeQuery(sql).then(() => done() )
+            executeQuery(sql4).then(() => {
+                executeQuery(sql2).then(() => {
+                    executeQuery(sql3).then(() => {
+                        executeQuery(sql).then(() =>  done())
+                    })
+                })
             })
         }catch(error){
-            console.log(error)
             return done(error)
         }
     })
@@ -124,5 +161,96 @@ describe('It should test all the end points', function (){
             })
         })
 
+    })
+
+    describe('it should signup an agent',() => {
+        it('It should not allow action for headers without x-access-token', (done) => {
+            chai.request(app).post('/api/v1/auth/agents/signup').type('form')
+                .send({}).end((err,res) => {
+                
+                expect(res).to.be.an('object');
+                expect(res).to.have.status(401);
+                expect(res.body).to.have.property('message');
+                done()
+            })
+        })
+        it('It should not allow action for non-admin and non-super admin role', (done) => {
+            chai.request(app).post('/api/v1/auth/signin').type('form')
+                    .send({username:"08163113450", password:"bacon"}).end((err, res) => {
+                expect(res).to.be.an('object');
+                expect(res).to.have.status(200);
+                const token = res.body.token
+                chai.request(app).post('/api/v1/auth/agents/signup').set('x-access-token', token)
+                    .send(userDetail).end((err, res) => {
+                        expect(res).to.be.an('object');
+                        expect(res).to.have.status(403);
+                       // expect(res.body.data).to.have.property('message');
+                        done()
+                    })
+            })
+        })
+        it('It should fail when the required fields are missing', (done) => {
+            chai.request(app).post('/api/v1/auth/signin').type('form')
+                    .send({username:"07010671710", password:"bacon"}).end((err, res) => {
+                expect(res).to.be.an('object');
+                expect(res).to.have.status(200);
+                const token = res.body.token
+                chai.request(app).post('/api/v1/auth/agents/signup').set('x-access-token', token)
+                    .send({}).end((err, res) => {
+                        expect(res).to.be.an('object');
+                        expect(res).to.have.status(400);
+                       // expect(res.body.data).to.have.property('message');
+                        done()
+                    })
+            })
+        })
+        it('It should fail when creating agents with same username', (done) => {
+            chai.request(app).post('/api/v1/auth/signin').type('form')
+                    .send({username:"07010671710", password:"bacon"}).end((err, res) => {
+                expect(res).to.be.an('object');
+                expect(res).to.have.status(200);
+                const token = res.body.token
+                chai.request(app).post('/api/v1/auth/agents/signup').set('x-access-token', token)
+                    .send(duplicateUser).end((err, res) => {
+                        expect(res).to.be.an('object');
+                        expect(res).to.have.status(406);
+                        expect(res.body).to.have.property('message');
+                        expect(res.body.message).to.equal('Username already exists')
+                        done()
+                    })
+            })
+        })
+        it('It should create an agent successfully', (done) => {
+            chai.request(app).post('/api/v1/auth/signin').type('form')
+                    .send({username:"07010671710", password:"bacon"}).end((err, res) => {
+                expect(res).to.be.an('object');
+                expect(res).to.have.status(200);
+                const token = res.body.token
+                chai.request(app).post('/api/v1/auth/agents/signup').set('x-access-token', token)
+                    .send(userDetail).end((err, res) => {
+                        expect(res).to.be.an('object');
+                        expect(res).to.have.status(201);
+                        expect(res.body).to.have.property('message');
+                        expect(res.body.message).to.equal('User created successfully')
+                        done()
+                    })
+            })
+        })
+        it('It should fail when passed an invalid token', (done) => {
+            chai.request(app).post('/api/v1/auth/signin').type('form')
+                    .send({username:"07010671710", password:"bacon"}).end((err, res) => {
+                expect(res).to.be.an('object');
+                expect(res).to.have.status(200);
+                const token = res.body.token
+                chai.request(app).post('/api/v1/auth/agents/signup').set('x-access-token', invalidToken)
+                    .send(userDetail).end((err, res) => {
+                        expect(res).to.be.an('object');
+                        expect(res).to.have.status(403);
+                        expect(res.body).to.have.property('message');
+                        expect(res.body.message).to.equal('Forbidden access')
+                        done()
+                    })
+            })
+        })
     })
 })

@@ -1,5 +1,5 @@
 import { executeQuery, isPasswordEqualHashPassword, assignToken } from "../helper";
-import { loginUser } from "../scripts";
+import { loginUser, createAgentUser, mapAgentToLGA } from "../scripts";
 
 export const loginUserWithUsernamePassword =  async (req, res) => {
     try{
@@ -7,8 +7,8 @@ export const loginUserWithUsernamePassword =  async (req, res) => {
         const result = await executeQuery(loginUser(username))
         if(result.length > 0){
             if(isPasswordEqualHashPassword(result[0].password, password )){
-                const {username, roleid, email, firstname, lastname, status,contactLine} = result[0]
-                const token = await assignToken({username, roleid, email, firstname, lastname, status, contactLine }) 
+                const {username, roleid, email,rolename, firstname, lastname, status,contactLine} = result[0]
+                const token = await assignToken({username,rolename, roleid, email, firstname, lastname, status, contactLine }) 
                 
                     
                 return  res.status(200).send({
@@ -28,4 +28,28 @@ export const loginUserWithUsernamePassword =  async (req, res) => {
     }catch(error){
         res.status(404).send({message: 'Invalid username or password'})
     }
+}
+
+export const createAgent = async (req, res) => {
+    const { firstname, lastname, email, contactLine, username, mappedLGAs, roleid } = req.body;
+    try{
+      const result = await  executeQuery(`select * from base_users where username=${username}`)
+      if(result.length > 0){
+          return res.status(406).send({
+              message: 'Username already exists'
+          })
+      }
+      const result2 = await executeQuery(createAgentUser(firstname, lastname, email, contactLine, roleid, username))
+      const result3 = await executeQuery(mapAgentToLGA(username, mappedLGAs,req.user.username))
+      return res.status(201).send({
+          message: 'User created successfully'
+      })
+    }catch(error){
+        console.log(error)
+        return res.status(500).send({
+            message: 'Some errors were encountered',
+            error
+        })
+    }
+
 }
