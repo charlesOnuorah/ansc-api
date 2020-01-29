@@ -52,3 +52,13 @@ export const verifyAgentCreationModel = (req, res, next) => {
     }
     next()
 }
+
+export const verifyIsAdminOrSuperAdminorEnumeratorAdmin = (req, res, next) => {
+    if(req.user.rolename === 'admin' || req.user.rolename === 'super admin' 
+    || req.user.rolename === 'enumerator_admin'){
+        return next();
+    }
+    return res.status(403).send({
+        message:'Unauthorized access, please contact admin'
+    })
+}
