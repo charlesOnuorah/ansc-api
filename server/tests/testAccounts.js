@@ -48,3 +48,38 @@ export const duplicateUser = {
 	"roleid":1,
 	"mappedLGAs": [2,3]
 }
+
+export const duplicateSchool = {
+	"schoolName": "chrisland shool",
+	"schoolNumber": "2348431",
+    "address": "lekki phase 1",
+    "lgaid": "1",
+    "stateid": "1",
+    "dateEstablishment": "July 10 1997",
+    "educationDistrict": "jdlkdncwon",
+    "schoolType": "1",
+    "schoolCategory": "1",
+    "principal": "1",
+    "telephoneNumber": "019101",
+    "mailingAddress": "010190191",
+    "owner": "1",
+    "latitude":"2.334344",
+    "longitude":"1.8999"
+}
+
+export const uniqueSchool = {
+	"schoolName": "chrisland shool",
+	"schoolNumber": "2348400",
+    "address": "lekki phase 1",
+    "lgaid": "1",
+    "stateid": "1",
+    "educationDistrict": "jdlkdncwon",
+    "schoolType": "1",
+    "schoolCategory": "1",
+    "principal": "1",
+    "telephoneNumber": "019101",
+    "mailingAddress": "010190191",
+    "owner": "1",
+    "latitude":"2.334344",
+    "longitude":"1.8999"
+}

@@ -7,6 +7,7 @@ import swaggerJSDoc from "swagger-jsdoc";
 
 
 import authRoute from "./routes/authRoute";
+import schoolRoute from "./routes/schoolRoute";
 
 const app = express()
 
@@ -55,6 +56,7 @@ app.get('/swagger.json', function(req, res) {
 //app.get('/customers', (req, res) => res.send({message:'hello world'}))
 
 app.use('/api/v1/auth', authRoute)
+app.use('/api/v1/school', schoolRoute);
 
 const port = process.env.PORT || 3000;
 
