@@ -27,9 +27,7 @@ export const loginUserWithUsernamePassword =  async (req, res) => {
         return res.status(404).send({
             message: 'Invalid username or password'
         })
-    }catch(error){
-        res.status(404).send({message: 'Invalid username or password', error})
-    }
+    }catch(error) {res.status(404).send({message: 'Invalid username or password'})}
 }
 
 export const createAgent = async (req, res) => {
@@ -46,13 +44,7 @@ export const createAgent = async (req, res) => {
       return res.status(201).send({
           message: 'User created successfully'
       })
-    }catch(error){
-        console.log(error)
-        return res.status(500).send({
-            message: 'Some errors were encountered',
-            error
-        })
-    }
+    }catch(error) {res.status(500).send({message: 'Some errors were encountered'})}
 
 }
 

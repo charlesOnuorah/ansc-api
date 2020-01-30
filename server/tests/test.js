@@ -565,6 +565,38 @@ describe('It should test all the end points', function (){
                     })
             })
         })
+        it('It should get all school successfully', (done) => {
+            chai.request(app).post('/api/v1/auth/signin').type('form')
+                    .send({username:"07010671710", password:"bacon"}).end((err, res) => {
+                expect(res).to.be.an('object');
+                expect(res).to.have.status(200);
+                const token = res.body.token
+                chai.request(app).get('/api/v1/school').set('x-access-token', token)
+                    .send(schoolInfo).end((err, res) => {
+                        expect(res).to.be.an('object');
+                        expect(res).to.have.status(200);
+                        expect(res.body).to.have.property('message');
+                        expect(res.body.message).to.equal('School fetched sucessfully')
+                        done()
+                    })
+            })
+        })
+        it('It should get school by id successfully', (done) => {
+            chai.request(app).post('/api/v1/auth/signin').type('form')
+                    .send({username:"07010671710", password:"bacon"}).end((err, res) => {
+                expect(res).to.be.an('object');
+                expect(res).to.have.status(200);
+                const token = res.body.token
+                chai.request(app).get('/api/v1/school/2348431').set('x-access-token', token)
+                    .send(schoolInfo).end((err, res) => {
+                        expect(res).to.be.an('object');
+                        expect(res).to.have.status(200);
+                        expect(res.body).to.have.property('message');
+                        expect(res.body.message).to.equal('School fetched sucessfully')
+                        done()
+                    })
+            })
+        })
     })
 
     describe('it should successfully create teacher',() => {
@@ -647,6 +679,22 @@ describe('It should test all the end points', function (){
                     })
             })
         })
+        it('It should get teachers by school successfully', (done) => {
+            chai.request(app).post('/api/v1/auth/signin').type('form')
+                    .send({username:"07010671710", password:"bacon"}).end((err, res) => {
+                expect(res).to.be.an('object');
+                expect(res).to.have.status(200);
+                const token = res.body.token
+                chai.request(app).get('/api/v1/teacher/2348431').set('x-access-token', token)
+                    .send(schoolInfo).end((err, res) => {
+                        expect(res).to.be.an('object');
+                        expect(res).to.have.status(200);
+                        expect(res.body).to.have.property('message');
+                        expect(res.body.message).to.equal('Teacher fetched successfully')
+                        done()
+                    })
+            })
+        })
     })
 
     describe('it should successfully create student',() => {
@@ -725,6 +773,22 @@ describe('It should test all the end points', function (){
                         expect(res).to.have.status(201);
                         expect(res.body).to.have.property('message');
                         expect(res.body.message).to.equal('Student created successfully')
+                        done()
+                    })
+            })
+        })
+        it('It should get students by school successfully', (done) => {
+            chai.request(app).post('/api/v1/auth/signin').type('form')
+                    .send({username:"07010671710", password:"bacon"}).end((err, res) => {
+                expect(res).to.be.an('object');
+                expect(res).to.have.status(200);
+                const token = res.body.token
+                chai.request(app).get('/api/v1/student/2348431').set('x-access-token', token)
+                    .send(schoolInfo).end((err, res) => {
+                        expect(res).to.be.an('object');
+                        expect(res).to.have.status(200);
+                        expect(res.body).to.have.property('message');
+                        expect(res.body.message).to.equal('Student fetched successfully')
                         done()
                     })
             })
