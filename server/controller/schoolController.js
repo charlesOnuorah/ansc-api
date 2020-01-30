@@ -1,5 +1,5 @@
 import { executeQuery } from "../helper";
-import { adminCreateSchool } from "../scripts";
+import { adminCreateSchool, getAgentSchool, getAgentSchoolById } from "../scripts";
 
 export const createSchool = async (req, res) => {
     const {schoolName,schoolNumber,address,lgaid,stateid,
@@ -21,11 +21,25 @@ export const createSchool = async (req, res) => {
             message: 'School created sucessfully',
             data: result3[0]
         })
-    }catch(error){
-        console.log(error)
-        return res.status(500).send({
-            message: 'Some errors were encountered',
-            error
+    }catch(error) {res.status(500).send({message: 'Some errors were encountered'})}
+}
+
+export const getAllSchool = async (req, res) => {
+    try{
+        const result = await executeQuery(getAgentSchool(req.user.username))
+        return res.status(200).send({
+            message: 'School fetched sucessfully',
+            school: result
         })
-    }
+    }catch(error) {res.status(500).send({message: 'Some errors were encountered'})}
+}
+
+export const getSchoolById = async (req,res) => {
+    try{
+        const result = await executeQuery(getAgentSchoolById(req.user.username, req.params.id))
+        return res.status(200).send({
+            message: 'School fetched sucessfully',
+            school: result
+        })
+    }catch(error) {res.status(500).send({message: 'Some errors were encountered'})}
 }

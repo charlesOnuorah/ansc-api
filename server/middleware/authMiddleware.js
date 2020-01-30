@@ -62,3 +62,7 @@ export const verifyIsAdminOrSuperAdminorEnumeratorAdmin = (req, res, next) => {
         message:'Unauthorized access, please contact admin'
     })
 }
+
+export const verifyIdExistsInParams = (req, res, next) => {
+    return req.params.id ? next() : res.status(406).send({message:'Please provide school id'})
+}

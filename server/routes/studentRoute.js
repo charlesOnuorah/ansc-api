@@ -1,10 +1,10 @@
 import express from "express";
-import { verifyToken } from "../middleware/authMiddleware";
+import { verifyToken, verifyIdExistsInParams } from "../middleware/authMiddleware";
 import { validateStudentForm } from "../middleware/studentMiddleware";
-import { createStudent } from "../controller/studentController";
+import { createStudent, getStudentsBySchool } from "../controller/studentController";
 
 const router = express.Router()
 
 router.post('/create_student', verifyToken, validateStudentForm, createStudent )
-
+router.get('/:id', verifyToken, verifyIdExistsInParams, getStudentsBySchool)
 export default router;

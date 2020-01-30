@@ -32,6 +32,10 @@ export const getAgentSchool = (username='') => {
     return `select * from base_school where lgaid in (select distinct lgaid from base_user_lga_access where mappedTo ='${username}');`
 }
 
+export const getAgentSchoolById = (username, id) => {
+    return `select * from base_school where schoolNumber = '${id}';`
+}
+
 export const getAgentLGAs = (username="") => {
     return `select * from base_territory where lgaid in (select distinct lgaid from base_user_lga_access where mappedTo ='${username}');`
 }
