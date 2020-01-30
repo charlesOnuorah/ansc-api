@@ -197,6 +197,59 @@ values ('chir','23432', 'lekki phase 1', 1, 1, 'Victoria island', 1, 1, 'Mrs fun
 );
 
 
+CREATE TABLE teachers(
+	id int primary key auto_increment,
+    schoolNumber varchar(100) not null,
+    oracleNumber varchar(100) not null,
+    registrationNumber varchar(100) not null,
+    surname varchar(50) not null,
+    firstname varchar(50) not null,
+    otherNames varchar(100),
+    sex varchar(25) not null,
+    maidenName varchar(50) not null,
+    gradeLevel varchar(25) not null,
+    stateid int not null,
+    dateOfBirth date not null,
+    dateOfFirstAppointment date,
+    dateOfInterStateTransfer date,
+    dateOfConfirmation date,
+    dateOfLastPromotion date,
+    homeAddress varchar(100),
+    telephoneNumber  varchar(25),
+    pfa varchar(100),
+    pfaNumber  varchar(100),
+    stateResidentRegNumber varchar(100),
+    email varchar(100),
+    exitDate date,
+    remark varchar(300),
+    FOREIGN KEY (schoolNumber)
+	REFERENCES base_school (schoolNumber),
+    FOREIGN KEY (stateid)
+	REFERENCES base_states (id),
+    datecreated timestamp default current_timestamp
+);
+
+
+
+CREATE TABLE teacher_qualification(
+id int primary key auto_increment,
+qualification varchar(300) not null,
+dateAcquired date not null,
+teacherId int not null,
+FOREIGN KEY (teacherId)
+REFERENCES teachers (id),
+datecreated timestamp default current_timestamp
+);
+
+create Table teacher_subjects(
+id int primary key auto_increment,
+subjectName varchar(100) not null,
+teacherId int not null,
+FOREIGN KEY (teacherId)
+REFERENCES teachers (id),
+datecreated timestamp default current_timestamp
+);
+
 
 
 

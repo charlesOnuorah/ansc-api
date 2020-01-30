@@ -69,7 +69,7 @@ export const duplicateSchool = {
 
 export const uniqueSchool = {
 	"schoolName": "chrisland shool",
-	"schoolNumber": "2348400",
+	"schoolNumber": "2348431",
     "address": "lekki phase 1",
     "lgaid": "1",
     "stateid": "1",
@@ -82,4 +82,83 @@ export const uniqueSchool = {
     "owner": "1",
     "latitude":"2.334344",
     "longitude":"1.8999"
+}
+
+export const schoolInfo = {
+	"schoolName": "chrisland shool",
+	"schoolNumber": "2348439090",
+    "address": "lekki phase 1",
+    "lgaid": "1",
+    "stateid": "1",
+    "educationDistrict": "jdlkdncwon",
+    "schoolType": "1",
+    "schoolCategory": "1",
+    "principal": "1",
+    "telephoneNumber": "019101",
+    "mailingAddress": "010190191",
+    "owner": "1",
+    "latitude":"2.334344",
+    "longitude":"1.8999"
+}
+
+export const teacher = {
+	"schoolNumber":"2348431",
+	"oracleNumber":"2121",
+	"registrationNumber":"2121",
+	"surname":"amah",
+    "firstname":"ugonma",
+    "otherNames":"onuorah",
+    "sex":"male",
+    "maidenName":"oledibe",
+    "gradeLevel":"level 5",
+    "stateid":"1",
+    "dateOfBirth":"August 10 1995",
+    "dateOfFirstAppointment":"August 10 1995",
+    "dateOfInterStateTransfer":"August 10 1995",
+    "dateOfConfirmation":"August 10 1995",
+    "dateOfLastPromotion":"August 10 1995",
+    "homeAddress":"lekki phase 1",
+    "telephoneNumber":"0901010109",
+    "pfa":"sfsa",
+    "pfaNumber":"er00102",
+    "stateResidentRegNumber":"23322",
+    "email":"c@c.com",
+    "exitDate":"August 10 1995",
+    "remark":"he is good",
+    "subjects":["English", "Mathematics"],
+    "qualification":[{"qualification":"B.Eng", "date":"August 10 2010"},
+    	{"qualification":"Msc", "date":"August 10 2010"}
+    ]
+    
+}
+
+export const teacher2 = {
+	"schoolNumber":"2348431",
+	"oracleNumber":"2121000",
+	"registrationNumber":"210030",
+	"surname":"amah",
+    "firstname":"ugonma",
+    "otherNames":"onuorah",
+    "sex":"male",
+    "maidenName":"oledibe",
+    "gradeLevel":"level 5",
+    "stateid":"1",
+    "dateOfBirth":"August 10 1995",
+    "dateOfFirstAppointment":"August 10 1995",
+    "dateOfInterStateTransfer":"August 10 1995",
+    "dateOfConfirmation":"August 10 1995",
+    "dateOfLastPromotion":"August 10 1995",
+    "homeAddress":"lekki phase 1",
+    "telephoneNumber":"0901010109",
+    "pfa":"sfsa",
+    "pfaNumber":"er00102",
+    "stateResidentRegNumber":"23322",
+    "email":"c@c.com",
+    "exitDate":"August 10 1995",
+    "remark":"he is good",
+    "subjects":["English", "Mathematics"],
+    "qualification":[{"qualification":"B.Eng", "date":"August 10 2010"},
+    	{"qualification":"Msc", "date":"August 10 2010"}
+    ]
+    
 }

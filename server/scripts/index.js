@@ -1,3 +1,4 @@
+import { teacherCreationSchema } from "../model"
 
 export const loginUser = (username='') => {
     return `SELECT * FROM base_users u LEFT JOIN user_roles r on u.roleid = r.roleid  where username=${username} `
@@ -27,4 +28,46 @@ principal,telephoneNumber,mailingAddress,owner,latitude = null,longitude = null)
     return `insert into base_school (schoolName,schoolNumber,address, lgaid, stateid, educationDistrict, schoolType, schoolCategory, principal,dateEstablishment,telephoneNumber,mailingAddress, owner, latitude, longitude)values ('${schoolName}', '${schoolNumber}', '${address}',${parseInt(lgaid)}, ${parseInt(stateid)},'${educationDistrict}', ${schoolType},${schoolCategory},'${principal}', ${dateEstablishment ? `STR_TO_DATE("${dateEstablishment}","%M %e %Y")`: null}, '${telephoneNumber}', '${mailingAddress}',${owner}, '${latitude}', '${longitude}');`
 }
 
-//`STR_TO_DATE('${dateEstablishment}','%m-%d-%y')`
+export const getAgentSchool = (username='') => {
+    return `select * from base_school where lgaid in (select distinct lgaid from base_user_lga_access where mappedTo ='${username}');`
+}
+
+export const getAgentLGAs = (username="") => {
+    return `select * from base_territory where lgaid in (select distinct lgaid from base_user_lga_access where mappedTo ='${username}');`
+}
+
+export const addStaff = (schoolNumber,oracleNumber,registrationNumber,surname,
+    firstname,otherNames,sex,maidenName,gradeLevel,stateid,dateOfBirth,
+    dateOfFirstAppointment,dateOfInterStateTransfer,dateOfConfirmation,
+    dateOfLastPromotion,homeAddress,telephoneNumber,pfa,
+    pfaNumber,stateResidentRegNumber,email,
+    exitDate,remark) => {
+        return `insert into teachers(schoolNumber,oracleNumber,registrationNumber,surname,firstname,otherNames,sex,maidenName,gradeLevel,stateid,dateOfBirth,dateOfFirstAppointment,dateOfInterStateTransfer,dateOfConfirmation,dateOfLastPromotion,homeAddress,telephoneNumber,pfa,pfaNumber,stateResidentRegNumber,email,exitDate,remark)
+         values ('${schoolNumber}','${oracleNumber}','${registrationNumber}','${surname}',
+            '${firstname}','${otherNames}','${sex}','${maidenName}','${gradeLevel}',${parseInt(stateid)},STR_TO_DATE("${dateOfBirth}","%M %e %Y"),
+            STR_TO_DATE("${dateOfFirstAppointment}","%M %e %Y"),STR_TO_DATE("${dateOfInterStateTransfer}","%M %e %Y"),STR_TO_DATE("${dateOfConfirmation}","%M %e %Y"),
+            STR_TO_DATE("${dateOfLastPromotion}","%M %e %Y"),'${homeAddress}','${telephoneNumber}','${pfa}',
+            '${pfaNumber}',${stateResidentRegNumber},'${email}',
+            STR_TO_DATE("${exitDate}","%M %e %Y"),'${remark}');`
+
+    }
+
+    export const saveQaulification = (teacherId, qualification) => {
+        let headerSql = `INSERT INTO teacher_qualification(qualification, dateAcquired, teacherId) values `
+        let bodySql = ''
+        for(let i = 0; i < qualification.length; i++){
+            bodySql = bodySql + `('${qualification[i].qualification}', STR_TO_DATE("${qualification[i].date}","%M %e %Y"), ${parseInt(teacherId)}),`
+        }
+        const preparedSql = bodySql.substr(0, bodySql.length - 1)
+        return `${headerSql} ${preparedSql};`
+    }
+
+    export const saveSubjects = (teacherId, subjects) => {
+        let headerSql = `INSERT INTO teacher_subjects(subjectName, teacherId) values `
+        let bodySql = ''
+        for(let i = 0; i < subjects.length; i++){
+            bodySql = bodySql + `('${subjects[i]}', ${parseInt(teacherId)}),`
+        }
+        const preparedSql = bodySql.substr(0, bodySql.length - 1)
+        return `${headerSql} ${preparedSql};`
+    }

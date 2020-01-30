@@ -34,3 +34,31 @@ export const schoolCreationSchema = Joi.object({
     latitude: Joi.string(),
     longitude: Joi.string()
 })
+
+export const teacherCreationSchema = Joi.object({
+    schoolNumber: Joi.string().required(),
+    oracleNumber: Joi.string().required(),
+    registrationNumber: Joi.string().required(),
+    surname: Joi.string().required(),
+    firstname: Joi.string().required(),
+    otherNames: Joi.string(),
+    sex: Joi.string().required(),
+    maidenName: Joi.string(),
+    gradeLevel: Joi.string().required(),
+    stateid: Joi.number().required(),
+    dateOfBirth: Joi.date(),
+    dateOfFirstAppointment: Joi.date(),
+    dateOfInterStateTransfer: Joi.date(),
+    dateOfConfirmation: Joi.date(),
+    dateOfLastPromotion: Joi.date(),
+    homeAddress: Joi.string().required(),
+    telephoneNumber: Joi.string().required(),
+    pfa: Joi.string(),
+    pfaNumber: Joi.string(),
+    stateResidentRegNumber: Joi.string().required(),
+    email: Joi.string().email().required(),
+    exitDate: Joi.date(),
+    remark: Joi.string(),
+    subjects: Joi.array(),
+    qualification: Joi.array()
+})
