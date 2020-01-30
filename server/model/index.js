@@ -59,6 +59,48 @@ export const teacherCreationSchema = Joi.object({
     email: Joi.string().email().required(),
     exitDate: Joi.date(),
     remark: Joi.string(),
-    subjects: Joi.array(),
-    qualification: Joi.array()
+    subjects: Joi.array().min(1),
+    qualification: Joi.array().min(1)
 })
+
+export const studentCreationSchema = Joi.object({
+    sPin: Joi.string() ,
+    otherName: Joi.string(),
+    surname: Joi.string().required() ,
+    firstname: Joi.string().required() ,
+    dateOfBirth: Joi.date().required() ,
+    placeOfBirth: Joi.string(),
+    sex: Joi.string().required() ,
+    schoolNumber: Joi.string().required() ,
+    stateid: Joi.number().required() ,
+    lgaid: Joi.number().required() ,
+    town: Joi.string().required() ,
+    religion: Joi.string().required() ,
+    studentClass: Joi.string().required(),
+    age: Joi.string().required()  ,
+    hobby: Joi.array().min(1),
+    dateOfAdmission: Joi.date().required() ,
+    admissionNo: Joi.string().required()  ,
+    studentAddress: Joi.string().required()  ,
+    fatherFullName : Joi.string().required(),
+    fatherAddress: Joi.string().required() ,
+    motherAddress: Joi.string().required() ,
+    fatherContact: Joi.string().required()  ,
+    fatherOccupation: Joi.string().required() ,
+    motherOccupation: Joi.string().required() ,
+    guardianContact: Joi.string().required()  ,
+    guardianName: Joi.string().required()  ,
+    guardianAddress: Joi.string().required() ,
+    signatureOfGuardian: Joi.string() ,
+    signatureOfStudent: Joi.string() ,
+    medicalCondition: Joi.string() ,
+    passportOfStudent: Joi.string() ,
+    passportOfGuardian: Joi.string() ,
+})
+/*
+
+    "signatureOfStudent":"",
+    "medicalCondition":"",
+    "passportOfStudent":"",
+    "passportOfGuardian":""
+*/

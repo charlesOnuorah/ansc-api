@@ -252,4 +252,51 @@ datecreated timestamp default current_timestamp
 
 
 
+CREATE TABLE IF NOT EXISTS students(
+id int primary key auto_increment,
+sPin varchar(20),
+otherName varchar(100),
+surname varchar(100) not null,
+firstname varchar(100) not null,
+dateOfBirth date not null,
+placeOfBirth date,
+sex varchar(20),
+schoolNumber varchar(50),
+stateid int not null,
+lgaid int not null,
+town varchar(100) not null,
+religion varchar(100) not null,
+class varchar(50) not null,
+age varchar(50) not null,
+dateOfAdmission date not null,
+admissionNo varchar(50) not null,
+studentAddress varchar(150) not null,
+fatherFullName varchar(100) not null,
+fatherAddress varchar(150),
+motherAddress varchar(150),
+fatherContact varchar(20) not null,
+fatherOccupation varchar(20),
+motherOccupation varchar(20),
+guardianContact varchar(20) not null,
+guardianName varchar(50) not null,
+guardianAddress varchar(100) not null,
+signatureOfGuardian varchar(300),
+signatureOfStudent varchar(300),
+medicalCondition varchar(300),
+passportOfStudent varchar(300),
+passportOfGuardian varchar(300),
+FOREIGN KEY (stateid)
+REFERENCES base_states (id),
+FOREIGN KEY (lgaid)
+REFERENCES base_territory (lgaid),
+FOREIGN KEY (schoolNumber)
+REFERENCES base_school (schoolNumber)
+);
 
+CREATE TABLE IF NOT EXISTS student_hobby(
+id int primary key auto_increment,
+hobby varchar(100),
+studentId int not null,
+FOREIGN KEY (studentId)
+REFERENCES students (id)
+);
