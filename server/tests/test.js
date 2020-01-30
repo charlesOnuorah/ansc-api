@@ -1,7 +1,7 @@
 import app from "../index";
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import { teacher, teacher2 } from "./testAccounts";
+import { teacher, teacher2, student1, student2 } from "./testAccounts";
 var should = chai.should();
 var expect = chai.expect;
 chai.use(chaiHttp);
@@ -167,7 +167,51 @@ describe('It should test all the end points', function (){
             "FOREIGN KEY (teacherId)\n"+
             "REFERENCES teachers (id),\n"+
             "datecreated timestamp default current_timestamp);"
-            
+        let sql23 = "CREATE TABLE IF NOT EXISTS students(\n"+
+            "id int primary key auto_increment,\n"+
+            "sPin varchar(20),\n"+
+            "otherName varchar(100),\n"+
+            "surname varchar(100) not null,\n"+
+            "firstname varchar(100) not null,\n"+
+            "dateOfBirth date not null,\n"+
+            "placeOfBirth varchar(100),\n"+
+            "sex varchar(20),\n"+
+            "schoolNumber varchar(50),\n"+
+            "stateid int not null,\n"+
+            "lgaid int not null,\n"+
+            "town varchar(100) not null,\n"+
+            "religion varchar(100) not null,\n"+
+            "class varchar(50) not null,\n"+
+            "age varchar(50) not null,\n"+
+            "dateOfAdmission date not null,\n"+
+            "admissionNo varchar(50) not null,\n"+
+            "studentAddress varchar(150) not null,\n"+
+            "fatherFullName varchar(100) not null,\n"+
+            "fatherAddress varchar(150),\n"+
+            "motherAddress varchar(150),\n"+
+            "fatherContact varchar(20) not null,\n"+
+            "fatherOccupation varchar(20),\n"+
+            "motherOccupation varchar(20),\n"+
+            "guardianContact varchar(20) not null,\n"+
+            "guardianName varchar(50) not null,\n"+
+            "guardianAddress varchar(100) not null,\n"+
+            "signatureOfGuardian varchar(300),\n"+
+            "signatureOfStudent varchar(300),\n"+
+            "medicalCondition varchar(300),\n"+
+            "passportOfStudent varchar(300),\n"+
+            "passportOfGuardian varchar(300),\n"+
+            "FOREIGN KEY (stateid)\n"+
+            "REFERENCES base_states (id),\n"+
+            "FOREIGN KEY (lgaid)\n"+
+            "REFERENCES base_territory (lgaid),\n"+
+            "FOREIGN KEY (schoolNumber)\n"+
+            "REFERENCES base_school (schoolNumber));"
+        let sql24 = "CREATE TABLE IF NOT EXISTS student_hobby(\n"+
+            "id int primary key auto_increment,\n"+
+            "hobby varchar(100),\n"+
+            "studentId int not null,\n"+
+            "FOREIGN KEY (studentId)\n"+
+            "REFERENCES students (id));"
         try{
                 console.log('Initiaitng, setting up test database')
                  executeQuery(sql).then(() => {
@@ -195,8 +239,12 @@ describe('It should test all the end points', function (){
                                                                                                         executeQuery(sql20).then(() => {
                                                                                                             executeQuery(sql21).then(() => {
                                                                                                                 executeQuery(sql22).then(() => {
-                                                                                                                    console.log('Testing Database set up')
-                                                                                                                    done();
+                                                                                                                    executeQuery(sql23).then(() => {
+                                                                                                                        executeQuery(sql24).then(() => {
+                                                                                                                            console.log('Testing Database set up')
+                                                                                                                            done();
+                                                                                                                        })
+                                                                                                                    })
                                                                                                                 })
                                                                                                             })
                                                                                                         })
@@ -229,15 +277,17 @@ describe('It should test all the end points', function (){
     })
     after( function (done){
         
-           let sql12 =  "DROP TABLE IF EXISTS user_roles;"
-           let sql11 =  "DROP TABLE IF EXISTS base_users;"
-           let sql6 = "DROP TABLE IF EXISTS base_territory"
-           let sql5 = "DROP TABLE IF EXISTS base_user_lga_access"
-           let sql4 = "DROP TABLE IF EXISTS base_school;"
-           let sql7 = "DROP TABLE IF EXISTS base_onwers;"
-           let sql8 = "DROP TABLE IF EXISTS base_states;"
-           let sql9 = "DROP TABLE IF EXISTS school_type;"
-           let sql10 = "DROP TABLE IF EXISTS gender_category;"
+           let sql14 =  "DROP TABLE IF EXISTS user_roles;"
+           let sql13 =  "DROP TABLE IF EXISTS base_users;"
+           let sql8 = "DROP TABLE IF EXISTS base_territory"
+           let sql6 = "DROP TABLE IF EXISTS base_user_lga_access"
+           let sql7 = "DROP TABLE IF EXISTS base_school;"
+           let sql9 = "DROP TABLE IF EXISTS base_onwers;"
+           let sql10 = "DROP TABLE IF EXISTS base_states;"
+           let sql11 = "DROP TABLE IF EXISTS school_type;"
+           let sql12 = "DROP TABLE IF EXISTS gender_category;"
+           let sql4 = "DROP TABLE IF EXISTS student_hobby;"
+           let sql5 = "DROP TABLE IF EXISTS students"
            let sql3 = "DROP TABLE IF EXISTS teachers;"
            let sql1 = "DROP TABLE IF EXISTS teacher_qualification;"
            let sql2 = "DROP TABLE IF EXISTS teacher_subjects;"
@@ -255,8 +305,12 @@ describe('It should test all the end points', function (){
                                                 executeQuery(sql10).then(() => {
                                                     executeQuery(sql11).then(() => {
                                                         executeQuery(sql12).then(() => {
-                                                            console.log('Recovering resources completed')
-                                                            done()
+                                                            executeQuery(sql13).then(() => {
+                                                                executeQuery(sql14).then(() => {
+                                                                    console.log('Recovering resources completed')
+                                                                    done()
+                                                                })
+                                                            })
                                                         })
                                                     })
                                                 })
@@ -589,6 +643,88 @@ describe('It should test all the end points', function (){
                         expect(res).to.have.status(201);
                         expect(res.body).to.have.property('message');
                         expect(res.body.message).to.equal('Teacher created successfully')
+                        done()
+                    })
+            })
+        })
+    })
+
+    describe('it should successfully create student',() => {
+        it('It should not allow action for headers without x-access-token', (done) => {
+            chai.request(app).post('/api/v1/student/create_student').type('form')
+                .send({}).end((err,res) => {
+                
+                expect(res).to.be.an('object');
+                expect(res).to.have.status(401);
+                expect(res.body).to.have.property('message');
+                done()
+            })
+        })
+        it('It should fail when the required fields are missing', (done) => {
+            chai.request(app).post('/api/v1/auth/signin').type('form')
+                    .send({username:"07010671710", password:"bacon"}).end((err, res) => {
+                expect(res).to.be.an('object');
+                expect(res).to.have.status(200);
+                const token = res.body.token
+                chai.request(app).post('/api/v1/teacher/create_teacher').set('x-access-token', token)
+                    .send({}).end((err, res) => {
+                        expect(res).to.be.an('object');
+                        expect(res).to.have.status(400);
+                       // expect(res.body.data).to.have.property('message');
+                        done()
+                    })
+            })
+        })
+        it('It should fail when creating multiple students with same admission number', (done) => {
+            chai.request(app).post('/api/v1/auth/signin').type('form')
+                    .send({username:"07010671710", password:"bacon"}).end((err, res) => {
+                expect(res).to.be.an('object');
+                expect(res).to.have.status(200);
+                const token = res.body.token
+                chai.request(app).post('/api/v1/student/create_student').set('x-access-token', token)
+                    .send(student1).end((err, res) => {
+                        expect(res).to.be.an('object');
+                        expect(res).to.have.status(201);
+                        chai.request(app).post('/api/v1/student/create_student').set('x-access-token', token)
+                            .send(student1).end((err, res) => {
+                                expect(res).to.be.an('object');
+                                expect(res).to.have.status(406);
+                                expect(res.body).to.have.property('message');
+                                expect(res.body.message).to.equal('Student Already exists')
+                                done()
+                            })
+                    })
+            })
+            
+        })
+        it('It should fail when passed an invalid token', (done) => {
+            chai.request(app).post('/api/v1/auth/signin').type('form')
+                    .send({username:"07010671710", password:"bacon"}).end((err, res) => {
+                expect(res).to.be.an('object');
+                expect(res).to.have.status(200);
+                const token = res.body.token
+                chai.request(app).post('/api/v1/student/create_student').set('x-access-token', invalidToken)
+                    .send(student2).end((err, res) => {
+                        expect(res).to.be.an('object');
+                        expect(res).to.have.status(403);
+                        expect(res.body).to.have.property('message');
+                        expect(res.body.message).to.equal('Forbidden access')
+                        done()
+                    })
+            })
+        })
+        it('It should create a student successfully', (done) => {
+            chai.request(app).post('/api/v1/auth/signin').type('form')
+                    .send({username:"07010671710", password:"bacon"}).end((err, res) => {
+                expect(res).to.be.an('object');
+                expect(res).to.have.status(200);
+                const token = res.body.token
+                chai.request(app).post('/api/v1/student/create_student').set('x-access-token', token)
+                    .send(student2).end((err, res) => {
+                        expect(res).to.be.an('object');
+                        expect(res).to.have.status(201);
+                        expect(res.body).to.have.property('message');
+                        expect(res.body.message).to.equal('Student created successfully')
                         done()
                     })
             })

@@ -71,3 +71,31 @@ export const addStaff = (schoolNumber,oracleNumber,registrationNumber,surname,
         const preparedSql = bodySql.substr(0, bodySql.length - 1)
         return `${headerSql} ${preparedSql};`
     }
+
+    export const saveStudents = (sPin,otherName,surname,firstname,dateOfBirth,placeOfBirth,sex,
+                    schoolNumber,stateid,lgaid,town,religion,studentClass,age,dateOfAdmission,
+                    admissionNo,studentAddress,fatherFullName,fatherAddress,motherAddress,fatherContact,fatherOccupation,motherOccupation,
+                    guardianContact,guardianName,guardianAddress,signatureOfGuardian,
+                    signatureOfStudent,medicalCondition,passportOfStudent,passportOfGuardian) => {
+                return `insert into students (sPin,otherName,surname,firstname,dateOfBirth,placeOfBirth,sex,
+                    schoolNumber,stateid,lgaid,town,religion,class,age,dateOfAdmission,
+                    admissionNo,studentAddress,fatherFullName,fatherAddress,motherAddress,fatherContact,fatherOccupation,motherOccupation,
+                    guardianContact,guardianName,guardianAddress,signatureOfGuardian,
+                    signatureOfStudent,medicalCondition,passportOfStudent,passportOfGuardian)
+                    values ('${sPin}','${otherName}','${surname}','${firstname}',STR_TO_DATE('${dateOfBirth}',"%M %e %Y"),'${placeOfBirth}','${sex}',
+                        '${schoolNumber}',${parseInt(stateid)},${parseInt(lgaid)},'${town}','${religion}','${studentClass}','${age}',STR_TO_DATE('${dateOfAdmission}',"%M %e %Y"),
+                        '${admissionNo}','${studentAddress}','${fatherFullName}','${fatherAddress}','${motherAddress}','${fatherContact}','${fatherOccupation}','${motherOccupation}',
+                        '${guardianContact}','${guardianName}','${guardianAddress}','${signatureOfGuardian}',
+                        '${signatureOfStudent}','${medicalCondition}','${passportOfStudent}','${passportOfGuardian}')
+                    `
+            }
+
+    export const saveStudentHobby = (studentId, hobby) => {
+        let headerSql = `INSERT INTO student_hobby(hobby,studentId) values `
+        let bodySql = ''
+        for(let i = 0; i < hobby.length; i++){
+            bodySql = bodySql + `('${hobby[i]}', ${parseInt(studentId)}),`
+        }
+        const preparedSql = bodySql.substr(0, bodySql.length - 1)
+        return `${headerSql} ${preparedSql};`
+    }
