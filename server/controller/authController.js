@@ -1,5 +1,5 @@
 import { executeQuery, isPasswordEqualHashPassword, assignToken } from "../helper";
-import { loginUser, createAgentUser, mapAgentToLGA } from "../scripts";
+import { loginUser, createAgentUser, mapAgentToLGA,getAgentLGAs, getAgentSchool } from "../scripts";
 
 export const loginUserWithUsernamePassword =  async (req, res) => {
     try{
@@ -9,11 +9,13 @@ export const loginUserWithUsernamePassword =  async (req, res) => {
             if(isPasswordEqualHashPassword(result[0].password, password )){
                 const {username, roleid, email,rolename, firstname, lastname, status,contactLine} = result[0]
                 const token = await assignToken({username,rolename, roleid, email, firstname, lastname, status, contactLine }) 
-                
-                    
+                const getUserSchool = await executeQuery(getAgentSchool(username))
+                const getUserLGA = await executeQuery(getAgentLGAs(username))
                 return  res.status(200).send({
                     message: 'Login Successful',
-                    user: result[0],
+                    user: result[0],    
+                    lga: getUserLGA,
+                    schools: getUserSchool,
                     token
                 })
                 
@@ -26,7 +28,7 @@ export const loginUserWithUsernamePassword =  async (req, res) => {
             message: 'Invalid username or password'
         })
     }catch(error){
-        res.status(404).send({message: 'Invalid username or password'})
+        res.status(404).send({message: 'Invalid username or password', error})
     }
 }
 

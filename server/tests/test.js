@@ -1,13 +1,15 @@
 import app from "../index";
 import chai from 'chai';
 import chaiHttp from 'chai-http';
+import { teacher, teacher2 } from "./testAccounts";
 var should = chai.should();
 var expect = chai.expect;
 chai.use(chaiHttp);
 
 var { executeQuery } = require('../helper');
 
-var { newUser, invalidToken, noUser, userDetail,uniqueSchool, duplicateUser, duplicateSchool } = require('./testAccounts');
+var { newUser, invalidToken, noUser, userDetail,uniqueSchool,
+     duplicateUser, duplicateSchool, schoolInfo } = require('./testAccounts');
 
 describe('It should test all the end points', function (){
     before( function(done) {
@@ -120,9 +122,54 @@ describe('It should test all the end points', function (){
             "dateEstablishment,telephoneNumber,mailingAddress, owner, latitude, longitude)\n"+
             "values ('okeyson shools','2348431', 'lekki phase 1', 1, 1, 'Victoria island', 1, 1, 'Mrs funke',null, '07010671710',\n"+
             "'1213',1, null, null);"
+        let sql20 = "CREATE TABLE IF NOT EXISTS teachers(\n"+
+            "id int primary key auto_increment,\n"+
+            "schoolNumber varchar(100) not null,\n"+
+            "oracleNumber varchar(100) not null,\n"+
+            "registrationNumber varchar(100) not null,\n"+
+            "surname varchar(50) not null,\n"+
+            "firstname varchar(50) not null,\n"+
+            "otherNames varchar(100),\n"+
+            "sex varchar(25) not null,\n"+
+            "maidenName varchar(50) not null,\n"+
+            "gradeLevel varchar(25) not null,\n"+
+            "stateid int not null,\n"+
+            "dateOfBirth date not null,\n"+
+            "dateOfFirstAppointment date,\n"+
+            "dateOfInterStateTransfer date,\n"+
+            "dateOfConfirmation date,\n"+
+            "dateOfLastPromotion date,\n"+
+            "homeAddress varchar(100),\n"+
+            "telephoneNumber  varchar(25),\n"+
+            "pfa varchar(100)\n,"+
+            "pfaNumber  varchar(100),\n"+
+            "stateResidentRegNumber varchar(100),\n"+
+            "email varchar(100),\n"+
+            "exitDate date,\n"+
+            "remark varchar(300),\n"+
+            "FOREIGN KEY (schoolNumber)\n"+
+            "REFERENCES base_school (schoolNumber),\n"+
+            "FOREIGN KEY (stateid)\n"+
+            "REFERENCES base_states (id),\n"+
+            "datecreated timestamp default current_timestamp);"
+        let sql21 = "CREATE TABLE IF NOT EXISTS teacher_qualification(\n"+
+            "id int primary key auto_increment,\n"+
+            "qualification varchar(300) not null,\n"+
+            "dateAcquired date not null,\n"+
+            "teacherId int not null,\n"+
+            "FOREIGN KEY (teacherId)\n"+
+            "REFERENCES teachers (id),\n"+
+            "datecreated timestamp default current_timestamp);"
+        let sql22 = "create Table IF NOT EXISTS teacher_subjects(\n"+
+            "id int primary key auto_increment,\n"+
+            "subjectName varchar(100) not null,\n"+
+            "teacherId int not null,\n"+
+            "FOREIGN KEY (teacherId)\n"+
+            "REFERENCES teachers (id),\n"+
+            "datecreated timestamp default current_timestamp);"
             
         try{
-
+                console.log('Initiaitng, setting up test database')
                  executeQuery(sql).then(() => {
                     executeQuery(sql2).then(() => {
                         executeQuery(sql3).then(() => {
@@ -144,7 +191,16 @@ describe('It should test all the end points', function (){
                                                                                         executeQuery(sql16c).then(() => {
                                                                                             executeQuery(sql17).then(() => {
                                                                                                 executeQuery(sql18).then(() => {
-                                                                                                    executeQuery(sql19).then(() => done())
+                                                                                                    executeQuery(sql19).then(() => {
+                                                                                                        executeQuery(sql20).then(() => {
+                                                                                                            executeQuery(sql21).then(() => {
+                                                                                                                executeQuery(sql22).then(() => {
+                                                                                                                    console.log('Testing Database set up')
+                                                                                                                    done();
+                                                                                                                })
+                                                                                                            })
+                                                                                                        })
+                                                                                                    })
                                                                                                 })
                                                                                             })
                                                                                         })
@@ -172,26 +228,39 @@ describe('It should test all the end points', function (){
             }
     })
     after( function (done){
-            var sql = '', sql2 = ''
-         sql = sql + "DROP TABLE IF EXISTS user_roles;"
-           sql2 = sql2 + "DROP TABLE IF EXISTS base_users;"
-           let sql3 = "DROP TABLE IF EXISTS base_territory"
-           let sql4 = "DROP TABLE IF EXISTS base_user_lga_access"
-           let sql5 = "DROP TABLE IF EXISTS base_school;"
-           let sql6 = "DROP TABLE IF EXISTS base_onwers;"
-           let sql7 = "DROP TABLE IF EXISTS base_states;"
-           let sql8 = "DROP TABLE IF EXISTS school_type;"
-           let sql9 = "DROP TABLE IF EXISTS gender_category;"
+        
+           let sql12 =  "DROP TABLE IF EXISTS user_roles;"
+           let sql11 =  "DROP TABLE IF EXISTS base_users;"
+           let sql6 = "DROP TABLE IF EXISTS base_territory"
+           let sql5 = "DROP TABLE IF EXISTS base_user_lga_access"
+           let sql4 = "DROP TABLE IF EXISTS base_school;"
+           let sql7 = "DROP TABLE IF EXISTS base_onwers;"
+           let sql8 = "DROP TABLE IF EXISTS base_states;"
+           let sql9 = "DROP TABLE IF EXISTS school_type;"
+           let sql10 = "DROP TABLE IF EXISTS gender_category;"
+           let sql3 = "DROP TABLE IF EXISTS teachers;"
+           let sql1 = "DROP TABLE IF EXISTS teacher_qualification;"
+           let sql2 = "DROP TABLE IF EXISTS teacher_subjects;"
         try{
-            executeQuery(sql4).then(() => {
+            console.log('Testing Complete, recovering resources')
+            executeQuery(sql1).then(() => {
                 executeQuery(sql2).then(() => {
-                    executeQuery(sql5).then(() => {
-                        executeQuery(sql3).then(() =>  {
-                            executeQuery(sql).then(() => {
+                    executeQuery(sql3).then(() => {
+                        executeQuery(sql4).then(() =>  {
+                            executeQuery(sql5).then(() => {
                                 executeQuery(sql6).then(() => {
                                     executeQuery(sql7).then(() => {
                                         executeQuery(sql8).then(() => {
-                                            executeQuery(sql9).then(() => done())
+                                            executeQuery(sql9).then(() => {
+                                                executeQuery(sql10).then(() => {
+                                                    executeQuery(sql11).then(() => {
+                                                        executeQuery(sql12).then(() => {
+                                                            console.log('Recovering resources completed')
+                                                            done()
+                                                        })
+                                                    })
+                                                })
+                                            })
                                         })
                                     })
                                 })
@@ -433,7 +502,7 @@ describe('It should test all the end points', function (){
                 expect(res).to.have.status(200);
                 const token = res.body.token
                 chai.request(app).post('/api/v1/school/create_school').set('x-access-token', token)
-                    .send(uniqueSchool).end((err, res) => {
+                    .send(schoolInfo).end((err, res) => {
                         expect(res).to.be.an('object');
                         expect(res).to.have.status(201);
                         expect(res.body).to.have.property('message');
@@ -444,18 +513,86 @@ describe('It should test all the end points', function (){
         })
     })
 
+    describe('it should successfully create teacher',() => {
+        it('It should not allow action for headers without x-access-token', (done) => {
+            chai.request(app).post('/api/v1/teacher/create_teacher').type('form')
+                .send({}).end((err,res) => {
+                
+                expect(res).to.be.an('object');
+                expect(res).to.have.status(401);
+                expect(res.body).to.have.property('message');
+                done()
+            })
+        })
+        it('It should fail when the required fields are missing', (done) => {
+            chai.request(app).post('/api/v1/auth/signin').type('form')
+                    .send({username:"07010671710", password:"bacon"}).end((err, res) => {
+                expect(res).to.be.an('object');
+                expect(res).to.have.status(200);
+                const token = res.body.token
+                chai.request(app).post('/api/v1/teacher/create_teacher').set('x-access-token', token)
+                    .send({}).end((err, res) => {
+                        expect(res).to.be.an('object');
+                        expect(res).to.have.status(400);
+                       // expect(res.body.data).to.have.property('message');
+                        done()
+                    })
+            })
+        })
+        it('It should fail when creating multiple teacher with same  registration number', (done) => {
+            chai.request(app).post('/api/v1/auth/signin').type('form')
+                    .send({username:"07010671710", password:"bacon"}).end((err, res) => {
+                expect(res).to.be.an('object');
+                expect(res).to.have.status(200);
+                const token = res.body.token
+                chai.request(app).post('/api/v1/teacher/create_teacher').set('x-access-token', token)
+                    .send(teacher).end((err, res) => {
+                        expect(res).to.be.an('object');
+                        expect(res).to.have.status(201);
+                        chai.request(app).post('/api/v1/teacher/create_teacher').set('x-access-token', token)
+                            .send(teacher).end((err, res) => {
+                                expect(res).to.be.an('object');
+                                expect(res).to.have.status(406);
+                                expect(res.body).to.have.property('message');
+                                expect(res.body.message).to.equal('Teacher Already exists')
+                                done()
+                            })
+                    })
+            })
+            
+        })
+        it('It should fail when passed an invalid token', (done) => {
+            chai.request(app).post('/api/v1/auth/signin').type('form')
+                    .send({username:"07010671710", password:"bacon"}).end((err, res) => {
+                expect(res).to.be.an('object');
+                expect(res).to.have.status(200);
+                const token = res.body.token
+                chai.request(app).post('/api/v1/teacher/create_teacher').set('x-access-token', invalidToken)
+                    .send(duplicateSchool).end((err, res) => {
+                        expect(res).to.be.an('object');
+                        expect(res).to.have.status(403);
+                        expect(res.body).to.have.property('message');
+                        expect(res.body.message).to.equal('Forbidden access')
+                        done()
+                    })
+            })
+        })
+        it('It should create a teacher successfully', (done) => {
+            chai.request(app).post('/api/v1/auth/signin').type('form')
+                    .send({username:"07010671710", password:"bacon"}).end((err, res) => {
+                expect(res).to.be.an('object');
+                expect(res).to.have.status(200);
+                const token = res.body.token
+                chai.request(app).post('/api/v1/teacher/create_teacher').set('x-access-token', token)
+                    .send(teacher2).end((err, res) => {
+                        expect(res).to.be.an('object');
+                        expect(res).to.have.status(201);
+                        expect(res.body).to.have.property('message');
+                        expect(res.body.message).to.equal('Teacher created successfully')
+                        done()
+                    })
+            })
+        })
+    })
+
 })
-
-
-/*
-"                "FOREIGN KEY (lgaid)\n"+
-                "REFERENCES base_territory (lgaid),\n"+
-                "FOREIGN KEY (stateid)\n"+
-                "REFERENCES base_states (id),\n"+
-                "FOREIGN KEY (schoolType)\n"+
-                "REFERENCES school_type (id),\n"+
-                "FOREIGN KEY (schoolCategory)\n"+
-                "REFERENCES gender_category (id),\n"+
-                "FOREIGN KEY (owner)\n"+
-                "REFERENCES base_owners (id));"
-*/
