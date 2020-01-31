@@ -45,3 +45,18 @@ export const getAllTeacherBySchool = async (req, res) => {
         })
     }catch(error) {res.status(500).send({message: 'Some errors were encountered',error})}
 }
+
+export const getTeacherById = async (req, res) => {
+    try{
+        const result = await executeQuery(`select * from teachers where id =${req.params.id}`)
+        const savedSubjects = await executeQuery(`select * from teacher_subjects where teacherId=${result[0].id}`)
+        const savedQualification = await executeQuery(`select * from teacher_qualification where teacherId=${result[0].id}`)
+        
+        return res.status(200).send({
+            message: 'Teacher fetched successfully',
+            data: result[0],
+            subject: savedSubjects,
+            qualification: savedQualification
+        })
+    }catch(error) {res.status(500).send({message: 'Some errors were encountered',error})}
+}

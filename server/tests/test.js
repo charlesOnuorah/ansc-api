@@ -1,7 +1,7 @@
 import app from "../index";
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import { teacher, teacher2, student1, student2 } from "./testAccounts";
+import { teacher, teacher2, student1, student2, teacher3, student3 } from "./testAccounts";
 var should = chai.should();
 var expect = chai.expect;
 chai.use(chaiHttp);
@@ -459,6 +459,38 @@ describe('It should test all the end points', function (){
                     })
             })
         })
+        it('It should get local governments the user is mapped to', (done) => {
+            chai.request(app).post('/api/v1/auth/signin').type('form')
+                    .send({username:"07010671710", password:"bacon"}).end((err, res) => {
+                expect(res).to.be.an('object');
+                expect(res).to.have.status(200);
+                const token = res.body.token
+                chai.request(app).get('/api/v1/auth/lga').set('x-access-token', token)
+                    .send(userDetail).end((err, res) => {
+                        expect(res).to.be.an('object');
+                        expect(res).to.have.status(200);
+                        expect(res.body).to.have.property('message');
+                        expect(res.body.message).to.equal('Data fetched successfully')
+                        done()
+                    })
+            })
+        })
+        it('It should get all states', (done) => {
+            chai.request(app).post('/api/v1/auth/signin').type('form')
+                    .send({username:"07010671710", password:"bacon"}).end((err, res) => {
+                expect(res).to.be.an('object');
+                expect(res).to.have.status(200);
+                const token = res.body.token
+                chai.request(app).get('/api/v1/auth/states').set('x-access-token', token)
+                    .send(userDetail).end((err, res) => {
+                        expect(res).to.be.an('object');
+                        expect(res).to.have.status(200);
+                        expect(res.body).to.have.property('message');
+                        expect(res.body.message).to.equal('Data fetched successfully')
+                        done()
+                    })
+            })
+        })
         it('It should fail when passed an invalid token', (done) => {
             chai.request(app).post('/api/v1/auth/signin').type('form')
                     .send({username:"07010671710", password:"bacon"}).end((err, res) => {
@@ -685,7 +717,7 @@ describe('It should test all the end points', function (){
                 expect(res).to.be.an('object');
                 expect(res).to.have.status(200);
                 const token = res.body.token
-                chai.request(app).get('/api/v1/teacher/2348431').set('x-access-token', token)
+                chai.request(app).get('/api/v1/teacher/school/2348431').set('x-access-token', token)
                     .send(schoolInfo).end((err, res) => {
                         expect(res).to.be.an('object');
                         expect(res).to.have.status(200);
@@ -695,6 +727,29 @@ describe('It should test all the end points', function (){
                     })
             })
         })
+        it('It should get teachers by id successfully', (done) => {
+            chai.request(app).post('/api/v1/auth/signin').type('form')
+                    .send({username:"07010671710", password:"bacon"}).end((err, res) => {
+                expect(res).to.be.an('object');
+                expect(res).to.have.status(200);
+                const token = res.body.token;
+                chai.request(app).post('/api/v1/teacher/create_teacher').set('x-access-token', token)
+                    .send(teacher3).end((err, res) => {
+                        expect(res).to.be.an('object');
+                        expect(res).to.have.status(201);
+                        expect(res.body).to.have.property('message');
+                        expect(res.body.message).to.equal('Teacher created successfully')
+                        chai.request(app).get(`/api/v1/teacher/${res.body.data.id}`).set('x-access-token', token)
+                            .send(schoolInfo).end((err, res) => {
+                                expect(res).to.be.an('object');
+                                expect(res).to.have.status(200);
+                                expect(res.body).to.have.property('message');
+                                expect(res.body.message).to.equal('Teacher fetched successfully')
+                                done()
+                            })
+                    })
+            })
+        })        
     })
 
     describe('it should successfully create student',() => {
@@ -783,7 +838,7 @@ describe('It should test all the end points', function (){
                 expect(res).to.be.an('object');
                 expect(res).to.have.status(200);
                 const token = res.body.token
-                chai.request(app).get('/api/v1/student/2348431').set('x-access-token', token)
+                chai.request(app).get('/api/v1/student/school/2348431').set('x-access-token', token)
                     .send(schoolInfo).end((err, res) => {
                         expect(res).to.be.an('object');
                         expect(res).to.have.status(200);
@@ -793,6 +848,29 @@ describe('It should test all the end points', function (){
                     })
             })
         })
+        it('It should get student by id successfully', (done) => {
+            chai.request(app).post('/api/v1/auth/signin').type('form')
+                    .send({username:"07010671710", password:"bacon"}).end((err, res) => {
+                expect(res).to.be.an('object');
+                expect(res).to.have.status(200);
+                const token = res.body.token;
+                chai.request(app).post('/api/v1/student/create_student').set('x-access-token', token)
+                    .send(student3).end((err, res) => {
+                        expect(res).to.be.an('object');
+                        expect(res).to.have.status(201);
+                        expect(res.body).to.have.property('message');
+                        expect(res.body.message).to.equal('Student created successfully')
+                        chai.request(app).get(`/api/v1/student/${res.body.data.id}`).set('x-access-token', token)
+                            .send(schoolInfo).end((err, res) => {
+                                expect(res).to.be.an('object');
+                                expect(res).to.have.status(200);
+                                expect(res.body).to.have.property('message');
+                                expect(res.body.message).to.equal('Student fetched successfully')
+                                done()
+                            })
+                    })
+            })
+        }) 
     })
 
 })

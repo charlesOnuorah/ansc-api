@@ -1,7 +1,8 @@
 import express from "express";
 import { validateUsernamePassword, verifyToken, verifyIsAdminOrSuperAdmin, verifyAgentCreationModel
  } from "../middleware/authMiddleware";
-import { loginUserWithUsernamePassword, createAgent } from "../controller/authController";
+import { loginUserWithUsernamePassword, createAgent, getLGAMappedToUser, getStates
+ } from "../controller/authController";
 const router = express.Router()
 
 /**
@@ -25,5 +26,9 @@ router.post('/signin',validateUsernamePassword, loginUserWithUsernamePassword );
 
 router.post('/agents/signup',verifyToken, verifyIsAdminOrSuperAdmin,
     verifyAgentCreationModel,createAgent )
+
+router.get('/lga', verifyToken, getLGAMappedToUser);
+
+router.get('/states', getStates)
 
 export default router
