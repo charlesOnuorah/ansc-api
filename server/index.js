@@ -1,6 +1,7 @@
 import express from "express";
 import swaggerJSDocs from "swagger-jsdoc";
 import swaggerUI from "swagger-ui-express";
+import cors from "cors";
 import bodyParser from 'body-parser';
 import "dotenv/config";
 import swaggerJSDoc from "swagger-jsdoc";
@@ -13,6 +14,7 @@ import studentRoute from "./routes/studentRoute";
 
 const app = express()
 
+app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
