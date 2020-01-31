@@ -11,7 +11,7 @@ const router = express.Router()
 router.post('/create_school', verifyToken, verifyIsAdminOrSuperAdminorEnumeratorAdmin,
     validateSchoolForm, createSchool )
 
-router.get('/', verifyToken, verifyIsAdminOrSuperAdminorEnumeratorAdmin, getAllSchool)
+router.get('/', verifyToken, getAllSchool)
 
 router.get('/:id', verifyToken, verifyIsAdminOrSuperAdminorEnumeratorAdmin, verifyIdExistsInParams, 
 getSchoolById)

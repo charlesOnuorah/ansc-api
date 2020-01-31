@@ -491,6 +491,22 @@ describe('It should test all the end points', function (){
                     })
             })
         })
+        it('It should get all school owners', (done) => {
+            chai.request(app).post('/api/v1/auth/signin').type('form')
+                    .send({username:"07010671710", password:"bacon"}).end((err, res) => {
+                expect(res).to.be.an('object');
+                expect(res).to.have.status(200);
+                const token = res.body.token
+                chai.request(app).get('/api/v1/auth/owners').set('x-access-token', token)
+                    .send(userDetail).end((err, res) => {
+                        expect(res).to.be.an('object');
+                        expect(res).to.have.status(200);
+                        expect(res.body).to.have.property('message');
+                        expect(res.body.message).to.equal('Data fetched successfully')
+                        done()
+                    })
+            })
+        })
         it('It should fail when passed an invalid token', (done) => {
             chai.request(app).post('/api/v1/auth/signin').type('form')
                     .send({username:"07010671710", password:"bacon"}).end((err, res) => {
