@@ -38,7 +38,7 @@ export const createStudent = async (req, res) => {
             data: result3[0],
             studentHobby
         })
-    }catch(error) {res.status(500).send({message: 'Some errors were encountered'})}
+    }catch(error) {res.status(500).send({message: 'Some errors were encountered', error})}
 }
 
 export const getStudentsBySchool = async (req, res) => {
