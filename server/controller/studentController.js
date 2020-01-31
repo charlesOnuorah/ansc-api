@@ -29,7 +29,7 @@ export const createStudent = async (req, res) => {
 
         const result3 = await executeQuery(`select * from students where admissionNo = ${admissionNo}`)
 
-        const result4 = await executeQuery(saveStudentHobby(result3[0].id, hobby))
+        const result4 = hobby ? await executeQuery(saveStudentHobby(result3[0].id, hobby)) : null
 
         const studentHobby = await executeQuery(`select * from student_hobby where studentId = ${result3[0].id}`)
         
