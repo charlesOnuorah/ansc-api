@@ -714,6 +714,7 @@ describe('It should test all the end points', function (){
                 chai.request(app).post('/api/v1/teacher/create_teacher').set('x-access-token', token)
                     .send(teacher).end((err, res) => {
                         expect(res).to.be.an('object');
+                        // console.log(res)
                         expect(res).to.have.status(201);
                         chai.request(app).post('/api/v1/teacher/create_teacher').set('x-access-token', token)
                             .send(teacher).end((err, res) => {
