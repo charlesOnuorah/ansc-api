@@ -4,7 +4,7 @@ import { saveStudents, saveStudentHobby } from "../scripts";
 export const createStudent = async (req, res) => {
     const {
             sPin,otherName,surname,firstname,dateOfBirth,placeOfBirth,sex,
-            schoolNumber,stateid,lgaid,town,religion,studentClass,age,dateOfAdmission,
+            schoolNumber,stateid:state,lgaid:lga,town,religion,studentClass,age,dateOfAdmission,
             admissionNo,studentAddress,fatherFullName,fatherAddress,motherAddress,fatherContact,fatherOccupation,motherOccupation,
             guardianContact,guardianName,guardianAddress,signatureOfGuardian,hobby,
             signatureOfStudent,medicalCondition,passportOfStudent,passportOfGuardian
@@ -17,6 +17,10 @@ export const createStudent = async (req, res) => {
                 message: 'Student Already exists',
             })
         }
+        const resultLGA = await executeQuery(`select * from base_territory where lga = '${lga.toLowerCase()}'`)
+        const lgaid = resultLGA[0].lgaid;
+        const resultState = await executeQuery(`select * from base_states where state = '${state.toLowerCase()}'`)
+        const stateid = resultState[0].id;
         const result2 = await executeQuery(saveStudents(sPin,otherName,surname,firstname,dateOfBirth,placeOfBirth,sex,
             schoolNumber,stateid,lgaid,town,religion,studentClass,age,dateOfAdmission,
             admissionNo,studentAddress,fatherFullName,fatherAddress,motherAddress,fatherContact,fatherOccupation,motherOccupation,

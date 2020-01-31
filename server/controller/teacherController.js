@@ -4,7 +4,7 @@ import { addStaff, saveQaulification, saveSubjects } from "../scripts";
 
 export const createTeacher = async (req, res) => {
     const {schoolNumber,oracleNumber,registrationNumber,surname,
-        firstname,otherNames,sex,maidenName,gradeLevel,stateid,dateOfBirth,
+        firstname,otherNames,sex,maidenName,gradeLevel,stateid:state,dateOfBirth,
         dateOfFirstAppointment,dateOfInterStateTransfer,dateOfConfirmation,
         dateOfLastPromotion,homeAddress,telephoneNumber,pfa,
         pfaNumber,stateResidentRegNumber,email,
@@ -16,6 +16,8 @@ export const createTeacher = async (req, res) => {
                 message: 'Teacher Already exists',
             })
         }
+        const resultState = await executeQuery(`select * from base_states where state = '${state.toLowerCase()}'`)
+        const stateid = resultState[0].id;
         const result2 = await executeQuery(addStaff(schoolNumber,oracleNumber,registrationNumber,surname,
                                             firstname,otherNames,sex,maidenName,gradeLevel,stateid,dateOfBirth,
                                             dateOfFirstAppointment,dateOfInterStateTransfer,dateOfConfirmation,
