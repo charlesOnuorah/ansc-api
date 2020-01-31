@@ -48,3 +48,23 @@ export const createAgent = async (req, res) => {
 
 }
 
+
+export const getLGAMappedToUser = async (req, res) => {
+    try{
+        const result = await executeQuery(`select * from base_user_lga_access where mappedTo=${req.user.username}`)
+        return res.status(200).send({
+            message: 'Data fetched successfully',
+            data: result
+        })
+    }catch(error) {res.status(500).send({message: 'Some errors were encountered', error})}
+}
+
+export const getStates = async (req, res) => {
+    try{
+        const result = await executeQuery(`select * from base_states`)
+        return res.status(200).send({
+            message: 'Data fetched successfully',
+            data: result
+        })
+    }catch(error) {res.status(500).send({message: 'Some errors were encountered', error})}
+}

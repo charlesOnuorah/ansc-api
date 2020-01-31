@@ -163,6 +163,37 @@ export const teacher2 = {
     
 }
 
+export const teacher3 = {
+	"schoolNumber":"2348431",
+	"oracleNumber":"210032100",
+	"registrationNumber":"210032100",
+	"surname":"amah",
+    "firstname":"ugonma",
+    "otherNames":"onuorah",
+    "sex":"male",
+    "maidenName":"oledibe",
+    "gradeLevel":"level 5",
+    "stateid":"1",
+    "dateOfBirth":"August 10 1995",
+    "dateOfFirstAppointment":"August 10 1995",
+    "dateOfInterStateTransfer":"August 10 1995",
+    "dateOfConfirmation":"August 10 1995",
+    "dateOfLastPromotion":"August 10 1995",
+    "homeAddress":"lekki phase 1",
+    "telephoneNumber":"0901010109",
+    "pfa":"sfsa",
+    "pfaNumber":"er00102",
+    "stateResidentRegNumber":"23322",
+    "email":"c@c.com",
+    "exitDate":"August 10 1995",
+    "remark":"he is good",
+    "subjects":["English", "Mathematics"],
+    "qualification":[{"qualification":"B.Eng", "date":"August 10 2010"},
+    	{"qualification":"Msc", "date":"August 10 2010"}
+    ]
+    
+}
+
 export const student1 = {
 	"sPin":"234",
 	"otherName":"charles",
@@ -215,6 +246,41 @@ export const student2 = {
     "age":"23",
     "dateOfAdmission":"July 10 2011",
     "admissionNo":"122128",
+    "studentAddress":"lagos",
+    "fatherFullName":"amah",
+    "fatherAddress":"lagos",
+    "motherAddress":"lagos",
+    "fatherContact":"engineer",
+    "fatherOccupation":"engineer",
+    "motherOccupation":"nurse",
+    "guardianContact":"lagos",
+    "guardianName":"lagos",
+    "guardianAddress":"laos",
+    "signatureOfGuardian":"aoa",
+    "signatureOfStudent":"okeyson",
+    "medicalCondition":"none",
+    "passportOfStudent":"provide lated",
+    "passportOfGuardian":"provided",
+    "hobby":["reading", "swimming"]
+}
+
+export const student3 = {
+	"sPin":"234",
+	"otherName":"charles",
+	"surname":"onuorah",
+	"firstname":"ugonma",
+	"dateOfBirth":"July 10 1997",
+	"placeOfBirth":"Lagos",
+	"sex":"Female",
+    "schoolNumber":"2348431",
+    "stateid":"1",
+    "lgaid":"1",
+    "town":"Achi",
+    "religion":"Christian",
+    "studentClass":"Jss 1",
+    "age":"23",
+    "dateOfAdmission":"July 10 2011",
+    "admissionNo":"1200018",
     "studentAddress":"lagos",
     "fatherFullName":"amah",
     "fatherAddress":"lagos",

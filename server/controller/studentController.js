@@ -46,3 +46,17 @@ export const getStudentsBySchool = async (req, res) => {
         })
     }catch(error) {res.status(500).send({message: 'Some errors were encountered', error})}
 }
+
+export const getStudentById = async (req, res) => {
+    try{
+        const result = await executeQuery(`select * from students where id = ${req.params.id}`)
+
+        const studentHobby = await executeQuery(`select * from student_hobby where studentId = ${result[0].id}`)
+        
+        return res.status(200).send({
+            message: 'Student fetched successfully',
+            data: result[0],
+            studentHobby
+        })
+    }catch(error) {res.status(500).send({message: 'Some errors were encountered', error})}
+}
