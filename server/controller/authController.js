@@ -68,3 +68,13 @@ export const getStates = async (req, res) => {
         })
     }catch(error) {res.status(500).send({message: 'Some errors were encountered', error})}
 }
+
+export const getOwners = async (req, res) => {
+    try{
+        const result = await executeQuery(`select * from base_owners`)
+        return res.status(200).send({
+            message: 'Data fetched successfully',
+            data: result
+        })
+    }catch(error) {res.status(500).send({message: 'Some errors were encountered', error})}
+}
