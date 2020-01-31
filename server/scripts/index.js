@@ -23,9 +23,9 @@ export const adminCreateSchool = (schoolName,schoolNumber,address,lgaid,stateid,
 educationDistrict,dateEstablishment= null,schoolType,schoolCategory,
 principal,telephoneNumber,mailingAddress,owner,latitude = null,longitude = null) => {
     if(longitude === null && latitude === null){
-        return `insert into base_school (schoolName,schoolNumber,address, lgaid, stateid, educationDistrict, schoolType, schoolCategory, principal,dateEstablishment,telephoneNumber,mailingAddress, owner)values ('${schoolName}', '${schoolNumber}', '${address}',${parseInt(lgaid)}, ${parseInt(stateid)},'${educationDistrict}', ${schoolType},${schoolCategory},'${principal}',${dateEstablishment ? `STR_TO_DATE("${dateEstablishment}","%M %e %Y")`: null}, '${telephoneNumber}', '${mailingAddress}',${owner});`
+        return `insert into base_school (schoolName,schoolNumber,address, lgaid, stateid, educationDistrict, schoolType, schoolCategory, principal,dateEstablishment,telephoneNumber,mailingAddress, owner)values ('${schoolName}', '${schoolNumber}', '${address}',${parseInt(lgaid)}, ${parseInt(stateid)},'${educationDistrict}', ${schoolType},${schoolCategory},'${principal}',${dateEstablishment ? `CONVERT("${dateEstablishment}",DATE)`: null}, '${telephoneNumber}', '${mailingAddress}',${owner});`
     }
-    return `insert into base_school (schoolName,schoolNumber,address, lgaid, stateid, educationDistrict, schoolType, schoolCategory, principal,dateEstablishment,telephoneNumber,mailingAddress, owner, latitude, longitude)values ('${schoolName}', '${schoolNumber}', '${address}',${parseInt(lgaid)}, ${parseInt(stateid)},'${educationDistrict}', ${schoolType},${schoolCategory},'${principal}', ${dateEstablishment ? `STR_TO_DATE("${dateEstablishment}","%M %e %Y")`: null}, '${telephoneNumber}', '${mailingAddress}',${owner}, '${latitude}', '${longitude}');`
+    return `insert into base_school (schoolName,schoolNumber,address, lgaid, stateid, educationDistrict, schoolType, schoolCategory, principal,dateEstablishment,telephoneNumber,mailingAddress, owner, latitude, longitude)values ('${schoolName}', '${schoolNumber}', '${address}',${parseInt(lgaid)}, ${parseInt(stateid)},'${educationDistrict}', ${schoolType},${schoolCategory},'${principal}', ${dateEstablishment ? `CONVERT("${dateEstablishment}",DATE)`: null}, '${telephoneNumber}', '${mailingAddress}',${owner}, '${latitude}', '${longitude}');`
 }
 
 export const getAgentSchool = (username='') => {
@@ -48,11 +48,11 @@ export const addStaff = (schoolNumber,oracleNumber,registrationNumber,surname,
     exitDate,remark) => {
         return `insert into teachers(schoolNumber,oracleNumber,registrationNumber,surname,firstname,otherNames,sex,maidenName,gradeLevel,stateid,dateOfBirth,dateOfFirstAppointment,dateOfInterStateTransfer,dateOfConfirmation,dateOfLastPromotion,homeAddress,telephoneNumber,pfa,pfaNumber,stateResidentRegNumber,email,exitDate,remark)
          values ('${schoolNumber}','${oracleNumber}','${registrationNumber}','${surname}',
-            '${firstname}','${otherNames}','${sex}','${maidenName}','${gradeLevel}',${parseInt(stateid)},STR_TO_DATE("${dateOfBirth}","%M %e %Y"),
-            STR_TO_DATE("${dateOfFirstAppointment}","%M %e %Y"),STR_TO_DATE("${dateOfInterStateTransfer}","%M %e %Y"),STR_TO_DATE("${dateOfConfirmation}","%M %e %Y"),
-            STR_TO_DATE("${dateOfLastPromotion}","%M %e %Y"),'${homeAddress}','${telephoneNumber}','${pfa}',
+            '${firstname}','${otherNames}','${sex}','${maidenName}','${gradeLevel}',${parseInt(stateid)},CONVERT("${dateOfBirth}",DATE),
+            CONVERT("${dateOfFirstAppointment}",DATE),CONVERT("${dateOfInterStateTransfer}",DATE),CONVERT("${dateOfConfirmation}",DATE),
+            CONVERT("${dateOfLastPromotion}",DATE),'${homeAddress}','${telephoneNumber}','${pfa}',
             '${pfaNumber}',${stateResidentRegNumber},'${email}',
-            STR_TO_DATE("${exitDate}","%M %e %Y"),'${remark}');`
+            CONVERT("${exitDate}",DATE),'${remark}');`
 
     }
 
@@ -60,7 +60,7 @@ export const addStaff = (schoolNumber,oracleNumber,registrationNumber,surname,
         let headerSql = `INSERT INTO teacher_qualification(qualification, dateAcquired, teacherId) values `
         let bodySql = ''
         for(let i = 0; i < qualification.length; i++){
-            bodySql = bodySql + `('${qualification[i].qualification}', STR_TO_DATE("${qualification[i].date}","%M %e %Y"), ${parseInt(teacherId)}),`
+            bodySql = bodySql + `('${qualification[i].qualification}', CONVERT("${qualification[i].date}",DATE), ${parseInt(teacherId)}),`
         }
         const preparedSql = bodySql.substr(0, bodySql.length - 1)
         return `${headerSql} ${preparedSql};`
@@ -86,8 +86,8 @@ export const addStaff = (schoolNumber,oracleNumber,registrationNumber,surname,
                     admissionNo,studentAddress,fatherFullName,fatherAddress,motherAddress,fatherContact,fatherOccupation,motherOccupation,
                     guardianContact,guardianName,guardianAddress,signatureOfGuardian,
                     signatureOfStudent,medicalCondition,passportOfStudent,passportOfGuardian)
-                    values ('${sPin}','${otherName}','${surname}','${firstname}',STR_TO_DATE('${dateOfBirth}',"%M %e %Y"),'${placeOfBirth}','${sex}',
-                        '${schoolNumber}',${parseInt(stateid)},${parseInt(lgaid)},'${town}','${religion}','${studentClass}','${age}',STR_TO_DATE('${dateOfAdmission}',"%M %e %Y"),
+                    values ('${sPin}','${otherName}','${surname}','${firstname}',CONVERT('${dateOfBirth}',DATE),'${placeOfBirth}','${sex}',
+                        '${schoolNumber}',${parseInt(stateid)},${parseInt(lgaid)},'${town}','${religion}','${studentClass}','${age}',CONVERT('${dateOfAdmission}',DATE),
                         '${admissionNo}','${studentAddress}','${fatherFullName}','${fatherAddress}','${motherAddress}','${fatherContact}','${fatherOccupation}','${motherOccupation}',
                         '${guardianContact}','${guardianName}','${guardianAddress}','${signatureOfGuardian}',
                         '${signatureOfStudent}','${medicalCondition}','${passportOfStudent}','${passportOfGuardian}')
